@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Telegram Clicker</title>
+  <script>
+    const userId = "{{ user_id }}"; // Получаем user_id от сервера
+
+    async function handleClick() {
+      const response = await fetch("/click", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: userId })
+      });
+      const data = await response.json();
+      updateUI(data);
+    }
+
+    async function handleUpgrade() {
+      const response = await fetch("/upgrade", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: userId })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        updateUI(data);
+      } else {
+        alert(data.error);
+      }
+    }
+
+    function updateUI(data) {
+      document.getElementById("clicks").textContent = data.clicks;
+      document.getElementById("multiplier").textContent = data.multiplier;
+    }
+  </script>
+</head>
+<body>
+  <div style="text-align: center; margin-top: 50px;">
+    <h1>Telegram Clicker</h1>
+    <p>Clicks: <span id="clicks">0</span></p>
+    <p>Multiplier: x<span id="multiplier">1</span></p>
+    <button onclick="handleClick()">Click Me!</button>
+    <button onclick="handleUpgrade()">Upgrade Multiplier (-10 Clicks)</button>
+  </div>
+</body>
+</html>
